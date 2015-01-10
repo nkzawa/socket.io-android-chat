@@ -1,0 +1,10 @@
+<resources>
+    <string name="title_activity_login">Join</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">What\'s your nickname?</string>
+    <string name="action_sign_in">Join</string>
+    <string name="action_sign_in_short">Join</string>
+
+    <string name="error_field_required">This field is required</string>
+</resources>
