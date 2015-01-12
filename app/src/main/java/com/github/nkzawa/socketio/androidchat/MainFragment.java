@@ -71,7 +71,7 @@ public class MainFragment extends Fragment {
         mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.on("new message", onNewMessage);
-        mSocket.on("user join", onUserJoin);
+        mSocket.on("user joined", onUserJoined);
         mSocket.on("user left", onUserLeft);
         mSocket.on("typing", onTyping);
         mSocket.on("stop typing", onStopTyping);
@@ -94,7 +94,7 @@ public class MainFragment extends Fragment {
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.off("new message", onNewMessage);
-        mSocket.off("user join", onUserJoin);
+        mSocket.off("user joined", onUserJoined);
         mSocket.off("user left", onUserLeft);
         mSocket.off("typing", onTyping);
         mSocket.off("stop typing", onStopTyping);
@@ -296,7 +296,7 @@ public class MainFragment extends Fragment {
         }
     };
 
-    private Emitter.Listener onUserJoin = new Emitter.Listener() {
+    private Emitter.Listener onUserJoined = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             getActivity().runOnUiThread(new Runnable() {
