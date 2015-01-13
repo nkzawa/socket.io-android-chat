@@ -1,9 +1,6 @@
 # socket.io-android-chat
 
-This is a simple chat demo for socket.io and Android. You can join chat.socket.io using the app.
-
-- http://socket.io/demos/chat/
-- https://github.com/nkzawa/socket.io-client.java
+This is a simple chat demo for socket.io and Android. You can join chat.socket.io using this app.
 
 ## Installation
 
