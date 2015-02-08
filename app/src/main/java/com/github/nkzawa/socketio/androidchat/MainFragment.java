@@ -245,7 +245,6 @@ public class MainFragment extends Fragment {
 
     private void startSignIn() {
         mUsername = null;
-        mSocket.connect();
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivityForResult(intent, REQUEST_LOGIN);
     }
@@ -253,6 +252,7 @@ public class MainFragment extends Fragment {
     private void leave() {
         mUsername = null;
         mSocket.disconnect();
+        mSocket.connect();
         startSignIn();
     }
 
