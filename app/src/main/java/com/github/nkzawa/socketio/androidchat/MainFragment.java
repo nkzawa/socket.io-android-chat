@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -32,6 +33,9 @@ import java.util.List;
  */
 public class MainFragment extends Fragment {
 
+    private int cid;
+    private String mUserId;
+
     private static final int REQUEST_LOGIN = 0;
 
     private static final int TYPING_TIMER_LENGTH = 600;
@@ -46,7 +50,14 @@ public class MainFragment extends Fragment {
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://chat.socket.io");
+            //mSocket = IO.socket("http://chat.socket.io");
+            IO.Options opts = new IO.Options();
+
+            //opts.port = 13001;
+            opts.query = "userID=6&userToken=maxengines";
+            //mSocket = IO.socket("https://www.vdomax.com:13001/",opts);
+
+            mSocket = IO.socket("https://www.vdomax.com:13001?userID="+mUserId+"&userToken=maxengines");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -70,14 +81,92 @@ public class MainFragment extends Fragment {
 
         mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.on("new message", onNewMessage);
-        mSocket.on("user joined", onUserJoined);
-        mSocket.on("user left", onUserLeft);
-        mSocket.on("typing", onTyping);
-        mSocket.on("stop typing", onStopTyping);
+
+        mSocket.on("connect",onConnect);
+        mSocket.on("error",onError);
+
+        mSocket.on("SendMessage",onSendMessage);
+        mSocket.on("JoinRoom",onJoinroom);
+
+        //mSocket.on("new message", onNewMessage);
+        //mSocket.on("user joined", onUserJoined);
+        //mSocket.on("user left", onUserLeft);
+        //mSocket.on("typing", onTyping);
+        //mSocket.on("stop typing", onStopTyping);
         mSocket.connect();
 
         startSignIn();
+    }
+
+    private Emitter.Listener onJoinroom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject data = (JSONObject) args[0];
+
+
+            try {
+                cid = data.getInt("conversation_id");
+            } catch (JSONException e) {
+                return;
+            }
+
+        }
+    };
+
+    private Emitter.Listener onSendMessage = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            //JSONObject data = (JSONObject) args[0];
+
+            appendMessage("msg", false);
+
+        }
+    };
+
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.i("onConnect", "connect success");
+            try {
+                attemptJoinRoom();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private Emitter.Listener onError = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.e("onError","something error");
+
+        }
+    };
+
+    private void appendMessage(String msg, boolean myMsg) {
+        Log.i("msg:",msg);
+        addMessage(mUsername, msg);
+    }
+
+    private void attemptJoinRoom() throws JSONException {
+        JSONObject jo = new JSONObject("{'CONVERSATION_ID':''," +
+                "'CONVERSATION_TYPE':'group'," +
+                "'USERID':'6'," +
+                "'FRIENDID':''," +
+                "'LIVE_USER_ID':'1301'}");
+
+        // perform the user login attempt.
+        mSocket.emit("JoinRoom", jo);
+    }
+
+    private void sendMessage(String msg) throws JSONException {
+        JSONObject jo = new JSONObject("{'CONVERSATION_ID':"+cid+"'MESSAGECHAT':'"+msg+"'," +
+                "'MESSAGETYPE':0," +
+                "'USERID':'6'," +
+                "'FRIENDID':''," +
+                "'LIVE_USER_ID':'1301'}");
+
+        mSocket.emit("SendMessage", jo);
     }
 
     @Override
@@ -93,11 +182,17 @@ public class MainFragment extends Fragment {
         mSocket.disconnect();
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.off("new message", onNewMessage);
-        mSocket.off("user joined", onUserJoined);
-        mSocket.off("user left", onUserLeft);
-        mSocket.off("typing", onTyping);
-        mSocket.off("stop typing", onStopTyping);
+        //mSocket.off("new message", onNewMessage);
+        //mSocket.off("user joined", onUserJoined);
+        //mSocket.off("user left", onUserLeft);
+        //mSocket.off("typing", onTyping);
+        //mSocket.off("stop typing", onStopTyping);
+
+        mSocket.off("connect",onConnect);
+        mSocket.off("error",onError);
+
+        mSocket.off("SendMessage",onSendMessage);
+        mSocket.off("JoinRoom",onJoinroom);
     }
 
     @Override
@@ -162,6 +257,7 @@ public class MainFragment extends Fragment {
 
         mUsername = data.getStringExtra("username");
         int numUsers = data.getIntExtra("numUsers", 1);
+        mUserId = data.getStringExtra("userId");
 
         addLog(getResources().getString(R.string.message_welcome));
         addParticipantsLog(numUsers);

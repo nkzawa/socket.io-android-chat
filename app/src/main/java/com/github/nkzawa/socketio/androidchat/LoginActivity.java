@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,9 +12,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,14 +32,30 @@ public class LoginActivity extends Activity {
 
     private String mUsername;
 
+
     private Socket mSocket;
     {
+
+
+
+        //mSocket = IO.socket("http://chat.socket.io");
+            //IO.setDefaultSSLContext(mySSLContext);
+            IO.Options opts = new IO.Options();
+            //opts.port = 13001;
+            //opts.secure = true;
+            opts.query = "userID=6&userToken=maxengines";
+            //opts.sslContext = mySSLContext;
+
         try {
-            mSocket = IO.socket("http://chat.socket.io");
+            mSocket = IO.socket("https://www.vdomax.com:13001/",opts);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        //mSocket = IO.socket("https://www.vdomax.com:13001?userID=6&userToken=maxengines&t=1424892568111");
+
     }
+
+    private int cid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +68,12 @@ public class LoginActivity extends Activity {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    //attemptLogin();
+                    try {
+                        attemptJoinRoom();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 }
                 return false;
@@ -60,11 +84,24 @@ public class LoginActivity extends Activity {
         signInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                //attemptLogin();
+                Intent intent = new Intent();
+                intent.putExtra("username", "myuser");
+                intent.putExtra("numUsers", 3);
+                intent.putExtra("userId", mUsernameView.getText().toString());
+                setResult(RESULT_OK, intent);
+                finish();
+
             }
         });
 
-        mSocket.on("login", onLogin);
+        //mSocket.on("login", onLogin);
+
+        mSocket.on("connect",onConnect);
+        mSocket.on("error",onError);
+
+        //mSocket.on("SendMessage",onSendMessage);
+        //mSocket.on("JoinRoom",onJoinroom);
     }
 
     @Override
@@ -101,6 +138,50 @@ public class LoginActivity extends Activity {
         mSocket.emit("add user", username);
     }
 
+    private void appendMessage(String msg, boolean myMsg) {
+        Log.i("msg:", msg);
+    }
+
+    private void attemptJoinRoom() throws JSONException {
+        /*
+        JSONObject jo = new JSONObject("{'CONVERSATION_ID':''," +
+                "'CONVERSATION_TYPE':'group'," +
+                "'USERID':'6'," +
+                "'FRIENDID':''," +
+                "'LIVE_USER_ID':'1301'}");
+                */
+
+        JSONObject jo = new JSONObject();
+        jo.put("CONVERSATION_ID","");
+        jo.put("CONVERSATION_TYPE","group");
+        jo.put("USERID","6");
+        jo.put("FRIENDID","");
+        jo.put("LIVE_USER_ID","1301");
+
+        // perform the user login attempt.
+        mSocket.emit("JoinRoom", jo);
+    }
+
+    private void sendMessage(String msg) throws JSONException {
+        /*
+        JSONObject jo = new JSONObject("{'CONVERSATION_ID':"+cid+"'MESSAGECHAT':'"+msg+"'," +
+                "'MESSAGETYPE':0," +
+                "'USERID':'6'," +
+                "'FRIENDID':''," +
+                "'LIVE_USER_ID':'1301'}");
+                */
+
+        JSONObject jo = new JSONObject();
+        jo.put("CONVERSATION_ID",cid);
+        jo.put("MESSAGECHAT",msg);
+        jo.put("MESSAGETYPE",0);
+        jo.put("USERID","6");
+        jo.put("FRIENDID","");
+        jo.put("LIVE_USER_ID","1301");
+
+        mSocket.emit("SendMessage", jo);
+    }
+
     private Emitter.Listener onLogin = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -118,6 +199,51 @@ public class LoginActivity extends Activity {
             intent.putExtra("numUsers", numUsers);
             setResult(RESULT_OK, intent);
             finish();
+        }
+    };
+
+    private Emitter.Listener onJoinroom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject data = (JSONObject) args[0];
+
+
+            try {
+                cid = data.getInt("conversation_id");
+            } catch (JSONException e) {
+                return;
+            }
+
+        }
+    };
+
+    private Emitter.Listener onSendMessage = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            //JSONObject data = (JSONObject) args[0];
+
+            appendMessage("msg", false);
+
+        }
+    };
+
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.i("onConnect","connect success");
+            try {
+                attemptJoinRoom();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private Emitter.Listener onError = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.e("onError","something error");
+
         }
     };
 }
