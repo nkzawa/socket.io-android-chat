@@ -35,9 +35,6 @@ public class LoginActivity extends Activity {
 
     private Socket mSocket;
     {
-
-
-
         //mSocket = IO.socket("http://chat.socket.io");
             //IO.setDefaultSSLContext(mySSLContext);
             IO.Options opts = new IO.Options();
