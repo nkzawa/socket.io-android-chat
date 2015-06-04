@@ -32,7 +32,7 @@ public class LoginActivity extends Activity {
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://chat.socket.io");
+            mSocket = IO.socket(Constants.CHAT_SERVER_URL);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
