@@ -40,11 +40,13 @@ public class LoginActivity extends Activity {
             IO.Options opts = new IO.Options();
             //opts.port = 13001;
             //opts.secure = true;
-            opts.query = "userID=6&userToken=maxengines";
+            //opts.query = "userID=6&userToken=maxengines";
             //opts.sslContext = mySSLContext;
+        opts.query = "userID=6&userToken=maxengines";
 
         try {
-            mSocket = IO.socket("https://www.vdomax.com:13001/",opts);
+
+            mSocket = IO.socket("http://korrio.co:13000/",opts);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
