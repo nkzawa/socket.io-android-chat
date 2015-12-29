@@ -24,13 +24,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int layout = -1;
         switch (viewType) {
-        case Message.TYPE_MESSAGE:
+        case BuildConfig.TYPE_MESSAGE:
             layout = R.layout.item_message;
             break;
-        case Message.TYPE_LOG:
+        case BuildConfig.TYPE_LOG:
             layout = R.layout.item_log;
             break;
-        case Message.TYPE_ACTION:
+        case BuildConfig.TYPE_ACTION:
             layout = R.layout.item_action;
             break;
         }
