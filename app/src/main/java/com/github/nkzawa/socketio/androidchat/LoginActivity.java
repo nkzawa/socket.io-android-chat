@@ -11,13 +11,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import io.socket.emitter.Emitter;
-import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.URISyntaxException;
 
 
 /**
@@ -30,18 +27,14 @@ public class LoginActivity extends Activity {
     private String mUsername;
 
     private Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket(Constants.CHAT_SERVER_URL);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        ChatApplication app = (ChatApplication) getApplication();
+        mSocket = app.getSocket();
 
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username_input);
