@@ -6,6 +6,8 @@
     <string name="action_send">Send</string>
     <string name="prompt_message">Message</string>
 
+    <string name="connect">Connected</string>
+    <string name="disconnect">Disconnected, Please check your internet connection</string>
     <string name="error_connect">Failed to connect</string>
 
     <!-- messages -->
