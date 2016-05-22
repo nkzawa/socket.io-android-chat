@@ -273,7 +273,8 @@ public class MainFragment extends Fragment {
                 @Override
                 public void run() {
                     if(!isConnected) {
-                        mSocket.emit("add user", mUsername);
+                        if(null!=mUsername)
+                            mSocket.emit("add user", mUsername);
                         Toast.makeText(getActivity().getApplicationContext(),
                                 R.string.connect, Toast.LENGTH_LONG).show();
                         isConnected = true;
