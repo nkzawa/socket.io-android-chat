@@ -1,6 +1,6 @@
 # socket.io-android-chat
 
-This is a simple chat demo for socket.io and Android. You can connect to [chat.socket.io](http://socket.io/demos/chat/) using this app.
+This is a simple chat demo for socket.io and Android. You can connect to [chat.socket.io](https://socketio-chat.now.sh/) using this app.
 
 ## Installation
 
