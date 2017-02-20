@@ -1,6 +1,7 @@
 package com.github.nkzawa.socketio.androidchat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,11 +61,19 @@ public class MainFragment extends Fragment {
         super();
     }
 
+
+    // This event fires 1st, before creation of fragment or any views
+    // The onAttach method is called when the Fragment instance is associated with an Activity.
+    // This does not mean the Activity is fully initialized.
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mAdapter = new MessageAdapter(activity, mMessages);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mAdapter = new MessageAdapter(context, mMessages);
+        if (context instanceof Activity){
+            //this.listener = (MainActivity) context;
+        }
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
