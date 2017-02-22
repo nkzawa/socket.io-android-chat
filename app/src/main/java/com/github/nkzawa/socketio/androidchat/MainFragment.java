@@ -1,6 +1,7 @@
 package com.github.nkzawa.socketio.androidchat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,19 +24,23 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+
 
 /**
  * A chat fragment containing messages view and input form.
  */
 public class MainFragment extends Fragment {
+
+    private static final String TAG = "MainFragment";
 
     private static final int REQUEST_LOGIN = 0;
 
@@ -55,11 +61,19 @@ public class MainFragment extends Fragment {
         super();
     }
 
+
+    // This event fires 1st, before creation of fragment or any views
+    // The onAttach method is called when the Fragment instance is associated with an Activity.
+    // This does not mean the Activity is fully initialized.
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mAdapter = new MessageAdapter(activity, mMessages);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mAdapter = new MessageAdapter(context, mMessages);
+        if (context instanceof Activity){
+            //this.listener = (MainActivity) context;
+        }
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -290,6 +304,7 @@ public class MainFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.i(TAG, "diconnected");
                     isConnected = false;
                     Toast.makeText(getActivity().getApplicationContext(),
                             R.string.disconnect, Toast.LENGTH_LONG).show();
@@ -304,6 +319,7 @@ public class MainFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.e(TAG, "Error connecting");
                     Toast.makeText(getActivity().getApplicationContext(),
                             R.string.error_connect, Toast.LENGTH_LONG).show();
                 }
@@ -324,6 +340,7 @@ public class MainFragment extends Fragment {
                         username = data.getString("username");
                         message = data.getString("message");
                     } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
                         return;
                     }
 
@@ -347,6 +364,7 @@ public class MainFragment extends Fragment {
                         username = data.getString("username");
                         numUsers = data.getInt("numUsers");
                     } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
                         return;
                     }
 
@@ -370,6 +388,7 @@ public class MainFragment extends Fragment {
                         username = data.getString("username");
                         numUsers = data.getInt("numUsers");
                     } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
                         return;
                     }
 
@@ -392,6 +411,7 @@ public class MainFragment extends Fragment {
                     try {
                         username = data.getString("username");
                     } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
                         return;
                     }
                     addTyping(username);
@@ -411,6 +431,7 @@ public class MainFragment extends Fragment {
                     try {
                         username = data.getString("username");
                     } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
                         return;
                     }
                     removeTyping(username);
