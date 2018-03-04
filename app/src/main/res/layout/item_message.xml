@@ -11,7 +11,7 @@
             android:textColor="?android:textColorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
+            android:singleLine="false"
             android:textStyle="bold"/>
     <TextView
             android:id="@+id/message"
