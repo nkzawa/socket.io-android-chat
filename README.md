@@ -10,10 +10,23 @@ This is a simple chat demo for socket.io and Android. You can connect to [https:
 
 ## Tutorial
 
+### Installing the Dependencies
+The first step is to install the Java Socket.IO client with Gradle.
+
+For this app, we just add the dependency to build.gradle:
+
+// app/build.gradle
+dependencies {
+    ...
+    implementation 'com.github.nkzawa:socket.io-client:0.3.0'
+}
+
 http://socket.io/blog/native-socket-io-and-android/
 
 ## Misc
 https://github.com/socketio/socket.io/issues/2823
+
+
 
 ## License
 
