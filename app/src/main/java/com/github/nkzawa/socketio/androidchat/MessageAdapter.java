@@ -1,11 +1,11 @@
 package com.github.nkzawa.socketio.androidchat;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -24,15 +24,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int layout = -1;
         switch (viewType) {
-        case Message.TYPE_MESSAGE:
-            layout = R.layout.item_message;
-            break;
-        case Message.TYPE_LOG:
-            layout = R.layout.item_log;
-            break;
-        case Message.TYPE_ACTION:
-            layout = R.layout.item_action;
-            break;
+            case Message.TYPE_MESSAGE:
+                layout = R.layout.item_message;
+                break;
+            case Message.TYPE_LOG:
+                layout = R.layout.item_log;
+                break;
+            case Message.TYPE_ACTION:
+                layout = R.layout.item_action;
+                break;
         }
         View v = LayoutInflater
                 .from(parent.getContext())
