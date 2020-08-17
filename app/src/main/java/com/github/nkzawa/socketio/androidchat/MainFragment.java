@@ -70,7 +70,7 @@ public class MainFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mAdapter = new MessageAdapter(context, mMessages);
-        if (context instanceof Activity){
+        if (context instanceof Activity) {
             //this.listener = (MainActivity) context;
         }
     }
@@ -84,8 +84,8 @@ public class MainFragment extends Fragment {
 
         ChatApplication app = (ChatApplication) getActivity().getApplication();
         mSocket = app.getSocket();
-        mSocket.on(Socket.EVENT_CONNECT,onConnect);
-        mSocket.on(Socket.EVENT_DISCONNECT,onDisconnect);
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.on("new message", onNewMessage);

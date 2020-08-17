@@ -32,7 +32,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation ('io.socket:socket.io-client:1.0.0') {
+    implementation ('io.socket:socket.io-client:0.8.3') {
         exclude group: 'org.json', module: 'json'
     }
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
